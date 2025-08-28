@@ -27,7 +27,7 @@ def make_predictions(image_path, model_path):
 def run_app():
     # Constants
     IMAGE_NAME = "uploaded.png"
-    MODEL_PATH = "best.pt"
+    MODEL_PATH = "best (2).pt"
     IMAGE_ADDRESS = "https://thinkpalm.com/wp-content/uploads/2023/01/image_03.jpg"
 
     # UI
