@@ -15,7 +15,8 @@ def make_predictions(image_path, model_path):
         if results:
             # The results object should have a method or property to output the plotted image
             # Check if 'plot' or similar is provided to illustrate detections
-            detection_image = results[0].plot()  # Adjust if function calls are different
+            for result in results:
+            detection_image = result.plot()  # Adjust if function calls are different
             return detection_image
         else:
             return None
@@ -27,11 +28,11 @@ def run_app():
     # Constants
     IMAGE_NAME = "uploaded.png"
     MODEL_PATH = "best.pt"
-    IMAGE_ADDRESS = "https://www.oecd.org/content/dam/oecd/en/publications/reports/2024/10/policy-scenarios-for-eliminating-plastic-pollution-by-2040_28eb9536/76400890-en.jpg"
+    IMAGE_ADDRESS = "https://thinkpalm.com/wp-content/uploads/2023/01/image_03.jpg"
 
     # UI
-    st.title("Plastic Detection")
-    st.image(IMAGE_ADDRESS, caption="Plastic Detection Example")
+    st.title("Pose Prediction")
+    st.image(IMAGE_ADDRESS, caption="Pose Prediction Example")
 
     # File uploader widget
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
@@ -54,11 +55,11 @@ def run_app():
                 st.image(image, use_container_width=True)
 
             with col2:
-                st.subheader("Detection Result")
+                st.subheader("Prediction Result")
                 if detection_image is not None:
-                    st.image(detection_image, caption='Detected Objects', use_container_width=True)
+                    st.image(detection_image, caption='Predicted Pose', use_container_width=True)
                 else:
-                    st.error("No detection results.", icon="🚨")
+                    st.error("No prediction results.", icon="🚨")
 
 if __name__ == "__main__":
     run_app()
