@@ -56,7 +56,7 @@ def run_app():
             with col2:
                 st.subheader("Prediction Result")
                 if detection_image is not None:
-                    st.image(detection_image, caption='Predicted Pose', use_container_width=True)
+                    st.image(detection_image, caption='Predicted Pose', width='stretch')
                 else:
                     st.error("No prediction results.", icon="🚨")
 
