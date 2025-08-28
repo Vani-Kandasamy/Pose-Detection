@@ -4,7 +4,7 @@ from app import run_app
 
 #from app import chat
 
-IMAGE_ADDRESS = "https://www.oecd.org/content/dam/oecd/en/publications/reports/2024/10/policy-scenarios-for-eliminating-plastic-pollution-by-2040_28eb9536/76400890-en.jpg"
+IMAGE_ADDRESS = "https://thinkpalm.com/wp-content/uploads/2023/01/image_03.jpg"
 
 # title
 #st.title("Google Login App")
