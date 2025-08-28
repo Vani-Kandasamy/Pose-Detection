@@ -16,8 +16,8 @@ def make_predictions(image_path, model_path):
             # The results object should have a method or property to output the plotted image
             # Check if 'plot' or similar is provided to illustrate detections
             for result in results:
-            detection_image = result.plot()  # Adjust if function calls are different
-            return detection_image
+                detection_image = result.plot()  # Adjust if function calls are different
+                return detection_image
         else:
             return None
     except Exception as e:
