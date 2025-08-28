@@ -6,7 +6,7 @@ def make_predictions(image_path, model_path):
     try:
         # Load the YOLO model
         yolo_model = YOLO(model_path)
-
+        st.markdown("Model loaded")
         # Perform prediction
         results = yolo_model.predict(image_path)
 
