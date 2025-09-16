@@ -4,4 +4,4 @@ streamlit
 authlib
 google-auth
 google-cloud-storage
-pillow==9.4.0
+setuptools
