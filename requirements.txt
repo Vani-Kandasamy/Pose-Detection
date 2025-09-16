@@ -1,6 +1,6 @@
-ultralytics==8.3.9
-opencv-python-headless
-streamlit
-authlib==1.5.2
-google-auth==2.39.0
-google-cloud-storage==3.1.0
+ultralytics==8.0.20  # Ensure you pick a version that is compatible with your needs
+opencv-python-headless==4.7.0.72  # A common stable version
+streamlit==1.28.0  # Your initial version which should work unless other packages rely on newer dependencies
+authlib==1.5.2  # As specified in your requirement
+google-auth==2.17.1  # Compatible with streamlit and commonly used versions
+google-cloud-storage==2.3.0  # Ensure it works with google-auth and is a stable release with streamlit
