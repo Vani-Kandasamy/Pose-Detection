@@ -1,6 +1,7 @@
-ultralytics==8.0.130  # Latest version with improvements; check compatibility with your models
-opencv-python-headless==4.8.1.78  # Latest stable headless version for server use, no GUI
-streamlit==1.24.0  # Newer version for improved features and bug fixes, ensure compatibility with other dependencies
-authlib==1.5.2  # Remains unchanged unless specific issues encountered
-google-auth==2.23.4  # Updated for improved support and security enhancements
-google-cloud-storage==2.11.0  # Latest stable version with enhanced cloud storage capabilities
+ultralytics==8.0.130
+opencv-python-headless==4.8.1.78
+streamlit==1.24.0
+authlib==1.5.2
+google-auth==2.23.4
+google-cloud-storage==2.11.0
+pillow==9.4.0  # Adjust this version if necessary
