@@ -1,82 +1,94 @@
 import streamlit as st
-from PIL import Image
-from ultralytics import YOLO
 import cv2
-from collections import Counter
-from io import BytesIO
+from ultralytics import YOLO
+import tempfile
+import os
 
-def extract_frames_from_video(video_path):
-    # Open video
-    cap = cv2.VideoCapture(video_path)
-    frames = []
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        # Convert frame from BGR to RGB
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        frames.append(frame)
-    cap.release()
-    return frames
+# Class name mapping
+CLASS_NAMES = [
+    'squat', 'bowl', 'pushup', 'pullup', 'tennis_serve', 
+    'baseball_swing', 'baseball_pitch', 'golf_swing', 
+    'tennis_forehand', 'bench_press', 'jumping_jacks', 
+    'situp', 'strum_guitar', 'clean_and_jerk', 'jump_rope'
+]
 
-def make_predictions_on_frames(frames, model_path):
+def process_video(video_path, model_path):
     try:
         # Load the YOLO model
-        yolo_model = YOLO(model_path)
-
-        # Store predictions and detection images
-        all_predictions = []  # To store the class IDs or names
-        detection_images = []  # To store the processed images
-
-        for frame in frames:
-            # Perform prediction
-            results = yolo_model.predict(frame)
-            if results:
-                # Assume results is list-like with a confidence attribute
-                for result in results:
-                    # Assuming that result has attributes `boxes` and `cls`
-                    for detection in result.boxes:
-                        all_predictions.append(detection.cls)
-
-                    # Assuming that `result.plot()` returns an image with annotations
-                    detection_images.append(result.plot())
-
-        return all_predictions, detection_images
+        model = YOLO(model_path)
+        
+        # Track the best detection
+        best_confidence = 0
+        best_frame = None
+        best_class_idx = None
+        
+        # Open the video file
+        cap = cv2.VideoCapture(video_path)
+        
+        # Process video frame by frame
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+                
+            # Convert BGR to RGB
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            
+            # Run YOLO prediction
+            results = model(frame_rgb)
+            
+            # Process detections
+            for result in results:
+                for box in result.boxes:
+                    cls_idx = int(box.cls[0])
+                    conf = float(box.conf[0])
+                    
+                    # Update best detection
+                    if conf > best_confidence:
+                        best_confidence = conf
+                        best_frame = result.plot()
+                        best_class_idx = cls_idx
+        
+        # Get class name
+        best_class_name = CLASS_NAMES[best_class_idx] if best_class_idx is not None and best_class_idx < len(CLASS_NAMES) else "unknown"
+        
+        # Release video capture
+        cap.release()
+        
+        return best_frame, best_class_name, best_confidence
+        
     except Exception as e:
-        st.error(f"Failed to make predictions: {str(e)}")
-        return [], []
+        st.error(f"Error processing video: {str(e)}")
+        return None, None, 0.0
 
-def run_app():
-    MODEL_PATH = "best (2).pt"
-
-    st.title("Pose Detection on Video")
-
-    uploaded_file = st.file_uploader("Choose a video file...", type=["mp4", "avi", "mov"])
-
+def main():
+    st.title("YOLO Pose Detection on Video")
+    
+    # File uploader
+    uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "avi", "mov"])
+    
     if uploaded_file is not None:
-        # Read video file bytes
-        video_bytes = uploaded_file.read()
-
-        # Save and read the video file
-        with open('temp_video.mp4', 'wb') as f:
-            f.write(video_bytes)
-
-        # Extract frames from the video
-        frames = extract_frames_from_video('temp_video.mp4')
-
-        # Get predictions
-        with st.spinner("Processing Video..."):
-            all_predictions, detection_images = make_predictions_on_frames(frames, MODEL_PATH)
-
-            # Determine class with max votes
-            if all_predictions:
-                class_counter = Counter(all_predictions)
-                most_common_class, count = class_counter.most_common(1)[0]
-                st.success(f"Predicted Class: {most_common_class} with {count} detections.")
-
-            # Display some of the processed frames
-            for idx, img in enumerate(detection_images[:5]):  # Display first 5 detection images
-                st.image(img, caption=f'Detection {idx+1}', use_column_width=True)
+        # Save uploaded file to a temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as tmp_file:
+            tmp_file.write(uploaded_file.read())
+            video_path = tmp_file.name
+            
+        try:
+            with st.spinner("Processing video..."):
+                # Process the video
+                best_frame, best_class, confidence = process_video(video_path, "best.pt")
+                
+                # Display results
+                if best_frame is not None:
+                    st.success(f"Best Detection - Class: {best_class.capitalize()}, Confidence: {confidence*100:.2f}%")
+                    st.image(best_frame, use_container_width=True)
+                else:
+                    st.warning("No detections found in the video.")
+                    
+        finally:
+            # Clean up the temporary file
+            if os.path.exists(video_path):
+                os.unlink(video_path)
 
 if __name__ == "__main__":
-    run_app()
+    main()
