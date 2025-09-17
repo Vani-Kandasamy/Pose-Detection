@@ -101,7 +101,10 @@ def main():
                 
                 if output_video is not None and os.path.exists(output_path):
                     st.success("Video processing complete!")
-                    
+
+                    # Read the output video file
+                    with open(output_path, 'rb') as video_file:
+                        video_bytes = video_file.read()
                     # Display best class and confidence
                     st.subheader("Detection Results")
                     st.write(f"Best Class: {best_class.capitalize()}")
