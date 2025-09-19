@@ -77,7 +77,7 @@ def process_video_with_annotations(video_path, model_path, output_path):
         st.error(f"Error processing video: {str(e)}")
         return None, None, 0.0
 
-def main():
+def run_app():
     st.title("YOLO Pose Detection on Video")
     IMAGE_ADDRESS = "https://thinkpalm.com/wp-content/uploads/2023/01/image_03.jpg"
 
@@ -124,6 +124,3 @@ def main():
                 os.unlink(video_path)
             if os.path.exists(output_path):
                 os.unlink(output_path)
-
-if __name__ == "__main__":
-    main()
