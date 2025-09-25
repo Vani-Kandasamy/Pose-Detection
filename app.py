@@ -133,3 +133,5 @@ def run_app():
                 os.unlink(video_path)
             if os.path.exists(output_path):
                 os.unlink(output_path)
+
+run_app()
