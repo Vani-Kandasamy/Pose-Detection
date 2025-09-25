@@ -1,5 +1,13 @@
 import streamlit as st
-import cv2
+
+try:
+    import cv2
+except ImportError:
+    import sys
+    import subprocess
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python-headless"])
+    import cv2
+
 from ultralytics import YOLO
 import tempfile
 import os
@@ -96,15 +104,16 @@ def run_app():
         try:
             with st.spinner("Processing video..."):
                 output_video, best_class, confidence = process_video_with_annotations(
-                    video_path, "best (2).pt", output_path
+                    video_path, "best.pt", output_path
                 )
                 
                 if output_video is not None and os.path.exists(output_path):
                     st.success("Video processing complete!")
-
+                    
                     # Read the output video file
                     with open(output_path, 'rb') as video_file:
                         video_bytes = video_file.read()
+                    
                     # Display best class and confidence
                     st.subheader("Detection Results")
                     st.write(f"Best Class: {best_class.capitalize()}")
