@@ -104,7 +104,7 @@ def run_app():
         try:
             with st.spinner("Processing video..."):
                 output_video, best_class, confidence = process_video_with_annotations(
-                    video_path, "best.pt", output_path
+                    video_path, "best (2).pt", output_path
                 )
                 
                 if output_video is not None and os.path.exists(output_path):
